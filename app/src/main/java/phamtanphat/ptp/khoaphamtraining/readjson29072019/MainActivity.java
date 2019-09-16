@@ -22,19 +22,19 @@ import io.reactivex.schedulers.Schedulers;
 public class MainActivity extends AppCompatActivity{
 
     MutableLiveData<String> mutableLiveData = new MutableLiveData<>();
+    Observable<String> mDataUrl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Observable<String> stringObservable = Observable.defer(new Callable<ObservableSource<? extends String>>() {
+        mDataUrl = Observable.defer(new Callable<ObservableSource<? extends String>>() {
             @Override
             public ObservableSource<? extends String> call() throws Exception {
                 return Observable.just();
             }
         });
 
-        stringObservable
-                .observeOn(Schedulers.io())
+        mDataUrl.observeOn(Schedulers.io())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe();
     }
