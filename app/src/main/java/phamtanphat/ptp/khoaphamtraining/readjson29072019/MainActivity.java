@@ -1,6 +1,7 @@
 package phamtanphat.ptp.khoaphamtraining.readjson29072019;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -20,7 +21,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity{
 
-    Disposable disposable;
+    MutableLiveData<String> mutableLiveData = new MutableLiveData<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity{
         stringObservable
                 .observeOn(Schedulers.io())
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(this);
+                .subscribe();
     }
     private String docNoiDung_Tu_URL(String theUrl){
         StringBuilder content = new StringBuilder();
