@@ -2,7 +2,9 @@ package phamtanphat.ptp.khoaphamtraining.readjson29072019;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -14,29 +16,45 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity{
 
     MutableLiveData<String> mutableLiveData = new MutableLiveData<>();
     Observable<String> mDataUrl;
+    @SuppressLint("CheckResult")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mDataUrl = Observable.defer(new Callable<ObservableSource<? extends String>>() {
+
+        mutableLiveData.observe(this, new Observer<String>() {
             @Override
-            public ObservableSource<? extends String> call() throws Exception {
-                return Observable.just();
+            public void onChanged(String s) {
+                Log.d("BBB",s);
             }
         });
 
-        mDataUrl.observeOn(Schedulers.io())
+
+        Observable.just(docNoiDung_Tu_URL("https://khoapham.vn/KhoaPhamTraining/json/tien/demo1.json"))
+                .observeOn(Schedulers.io())
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .doOnError(new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.d("BBB",throwable.getMessage());
+                    }
+                })
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+                        Log.d("BBB",s);
+                        mutableLiveData.postValue(s);
+                    }
+                });
     }
     private String docNoiDung_Tu_URL(String theUrl){
         StringBuilder content = new StringBuilder();
