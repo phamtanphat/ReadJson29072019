@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         // Viet ra 1 observable cho Doi tuong sinh vien
         // Khi doi tuong sinhvien thay doi thi onNext se chay lai
     }
-
     private void callDataFromUrl() {
         mData = Observable.defer(new Callable<ObservableSource<? extends String>>() {
             @Override
@@ -86,29 +85,5 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
     }
 
-    private String docNoiDung_Tu_URL(String theUrl){
-        StringBuilder content = new StringBuilder();
-        try    {
-            // create a url object
-            URL url = new URL(theUrl);
 
-            // create a urlconnection object
-            URLConnection urlConnection = url.openConnection();
-
-            // wrap the urlconnection in a bufferedreader
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-
-            String line;
-
-            // read from the urlconnection via the bufferedreader
-            while ((line = bufferedReader.readLine()) != null){
-                content.append(line + "\n");
-            }
-            bufferedReader.close();
-        }
-        catch(Exception e)    {
-            e.printStackTrace();
-        }
-        return content.toString();
-    }
 }
