@@ -1,12 +1,13 @@
 package phamtanphat.ptp.khoaphamtraining.readjson29072019;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -19,43 +20,43 @@ import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
-    MutableLiveData<String> mutableLiveData = new MutableLiveData<>();
-    Observable<String> mDataUrl;
+    TextView txtJsonDemo1;
+    Button btnJsonDemo1;
+    // Dai quan sat : Noi chua du lieu se phat tan ra ngoai
+    Observable<Sinhvien> mData;
+    Disposable disposable;
     @SuppressLint("CheckResult")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        txtJsonDemo1 = findViewById(R.id.textviewJson);
+        btnJsonDemo1 = findViewById(R.id.buttonJsonDemo1);
 
-        mutableLiveData.observe(this, new Observer<String>() {
+        btnJsonDemo1.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onChanged(String s) {
-                Log.d("BBB",s);
+            public void onClick(View view) {
+
             }
         });
+        // Viet ra 1 observable cho Doi tuong sinh vien
+        // Khi doi tuong sinhvien thay doi thi onNext se chay lai
 
-
-        Observable.just(docNoiDung_Tu_URL("https://khoapham.vn/KhoaPhamTraining/json/tien/demo1.json"))
-                .observeOn(Schedulers.io())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .doOnError(new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Log.d("BBB",throwable.getMessage());
-                    }
-                })
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String s) throws Exception {
-                        Log.d("BBB",s);
-                        mutableLiveData.postValue(s);
-                    }
-                });
     }
+
+    @Override
+    protected void onStop() {
+        if (disposable != null){
+            disposable.dispose();
+        }
+        super.onStop();
+    }
+
     private String docNoiDung_Tu_URL(String theUrl){
         StringBuilder content = new StringBuilder();
         try    {
@@ -81,8 +82,4 @@ public class MainActivity extends AppCompatActivity{
         }
         return content.toString();
     }
-
 }
-
-
-
