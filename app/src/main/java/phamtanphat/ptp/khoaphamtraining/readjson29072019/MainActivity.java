@@ -10,6 +10,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -41,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         txtJsonDemo1 = findViewById(R.id.textviewJson);
         btnJsonDemo1 = findViewById(R.id.buttonJsonDemo1);
-        mainViewModel = new MainViewModel();
+        mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         mainViewModel.mTxtNoiDung.observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
