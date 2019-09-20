@@ -28,9 +28,8 @@ public class MainActivity extends AppCompatActivity {
     TextView txtJsonDemo1;
     Button btnJsonDemo1;
     // Dai quan sat : Noi chua du lieu se phat tan ra ngoai
-    Observable<Sinhvien> mData;
+    Observable<String> mData;
     Disposable disposable;
-    @SuppressLint("CheckResult")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,12 +40,20 @@ public class MainActivity extends AppCompatActivity {
         btnJsonDemo1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                callDataFromUrl();
             }
         });
         // Viet ra 1 observable cho Doi tuong sinh vien
         // Khi doi tuong sinhvien thay doi thi onNext se chay lai
+    }
 
+    private void callDataFromUrl() {
+        mData = Observable.defer(new Callable<ObservableSource<? extends String>>() {
+            @Override
+            public ObservableSource<? extends String> call() throws Exception {
+                return Observable.just(docNoiDung_Tu_URL("https://khoapham.vn/KhoaPhamTraining/json/tien/demo1.json"));
+            }
+        });
     }
 
     @Override
