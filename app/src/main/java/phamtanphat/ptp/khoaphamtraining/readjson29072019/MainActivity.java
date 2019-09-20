@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -21,6 +22,7 @@ import java.util.concurrent.Callable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnJsonDemo1;
     // Dai quan sat : Noi chua du lieu se phat tan ra ngoai
     Observable<String> mData;
-    Disposable disposable;
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,28 +56,32 @@ public class MainActivity extends AppCompatActivity {
         mData = Observable.defer(new Callable<ObservableSource<? extends String>>() {
             @Override
             public ObservableSource<? extends String> call() throws Exception {
-                return Observable.just(docNoiDung_Tu_URL("https://khoapham.vn/KhoaPhamTraining/json/tien/demo1.json"));
+                return Observable.just(docNoiDung_Tu_URL("https://khoapham.vn/KhoaPhamTraining/json/tien/demo2.json"));
             }
         });
-        mData
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Consumer<String>() {
-                @Override
-                public void accept(String s) throws Exception {
-                    // 1 : Convert du lieu ve dang json neu nhu dang string
-                    // 2 : Dem bao nhieu the mo de doc duoc gia tri minh can thi khai bay nhiu json
-                    JSONObject jsonObject = new JSONObject(s);
-                    String monhoc = jsonObject.getString("monhoc");
-                    Toast.makeText(MainActivity.this, monhoc, Toast.LENGTH_SHORT).show();
-                }
-            });
+        compositeDisposable.add(mData
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Consumer<String>() {
+                            @Override
+                            public void accept(String s) throws Exception {
+                                // 1 : Convert du lieu ve dang json neu nhu dang string
+                                // 2 : Dem bao nhieu the mo de doc duoc gia tri minh can thi khai bay nhiu json
+                                JSONObject jsonObject = new JSONObject(s);
+                                JSONArray jsonArray = jsonObject.getJSONArray("danhsach");
+                                for (int i = 0 ; i < jsonArray.length() ; i++){
+                                    JSONObject jsonObjectKhoahoc = jsonArray.getJSONObject(i);
+                                    String khoahoc = jsonObjectKhoahoc.getString("khoahoc");
+                                    Toast.makeText(MainActivity.this, khoahoc , Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }));
     }
 
     @Override
     protected void onStop() {
-        if (disposable != null){
-            disposable.dispose();
+        if (compositeDisposable != null){
+            compositeDisposable.dispose();
         }
         super.onStop();
     }
