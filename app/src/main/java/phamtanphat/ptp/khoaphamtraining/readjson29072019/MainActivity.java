@@ -6,8 +6,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -54,6 +57,19 @@ public class MainActivity extends AppCompatActivity {
                 return Observable.just(docNoiDung_Tu_URL("https://khoapham.vn/KhoaPhamTraining/json/tien/demo1.json"));
             }
         });
+        mData
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Consumer<String>() {
+                @Override
+                public void accept(String s) throws Exception {
+                    // 1 : Convert du lieu ve dang json neu nhu dang string
+                    // 2 : Dem bao nhieu the mo de doc duoc gia tri minh can thi khai bay nhiu json
+                    JSONObject jsonObject = new JSONObject(s);
+                    String monhoc = jsonObject.getString("monhoc");
+                    Toast.makeText(MainActivity.this, monhoc, Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 
     @Override
