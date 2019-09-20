@@ -57,6 +57,7 @@ public class MainViewModel extends ViewModel implements LifecycleObserver {
                 for (int i = 0 ; i < jsonArray.length() ; i++){
                     JSONObject jsonObjectKhoahoc = jsonArray.getJSONObject(i);
                     String khoahoc = jsonObjectKhoahoc.getString("khoahoc");
+                    mTxtNoiDung.setValue(khoahoc);
                 }
             }
         });
